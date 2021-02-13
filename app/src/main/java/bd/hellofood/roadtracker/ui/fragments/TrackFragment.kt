@@ -139,6 +139,7 @@ class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.Permissio
     fun uploadTrack(track: Track){
         Timber.d("uploading now")
 
+
         Toast.makeText(context, "Track has been uploaded!",Toast.LENGTH_SHORT).show();
     }
 }
