@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,17 +13,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bd.hellofood.roadtracker.R
 import bd.hellofood.roadtracker.adapters.TrackAdapter
+import bd.hellofood.roadtracker.db.Track
 import bd.hellofood.roadtracker.other.Constants.REQUEST_CODE_LOCATION_PERMISSION
 import bd.hellofood.roadtracker.other.SortType
 import bd.hellofood.roadtracker.other.TrackingUtility
+import bd.hellofood.roadtracker.ui.MainActivity
 import bd.hellofood.roadtracker.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_run.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber
 
 @AndroidEntryPoint
-class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.PermissionCallbacks {
+class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.PermissionCallbacks, TrackAdapter.ItemListener {
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -66,8 +70,10 @@ class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.Permissio
 
     private fun setupRecyclerView() = rvRuns.apply {
         trackAdapter = TrackAdapter()
+        trackAdapter.setListener(this@TrackFragment)
         adapter = trackAdapter
         layoutManager = LinearLayoutManager(requireContext())
+
     }
 
     private fun requestPermissions() {
@@ -111,6 +117,29 @@ class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.Permissio
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onItemClicked(track: Track, action: String) {
+
+        when(action){
+            "delete" -> deleteTrack(track)
+            "upload" -> uploadTrack(track)
+        }
+
+    }
+
+    fun deleteTrack(track: Track){
+        Timber.d("deleting now")
+        viewModel.deleteRun(track);
+        Toast.makeText(context, "Track has been deleted!",Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    fun uploadTrack(track: Track){
+        Timber.d("uploading now")
+
+        Toast.makeText(context, "Track has been uploaded!",Toast.LENGTH_SHORT).show();
     }
 }
 

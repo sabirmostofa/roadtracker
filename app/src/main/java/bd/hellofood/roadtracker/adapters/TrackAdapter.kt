@@ -3,12 +3,14 @@ package bd.hellofood.roadtracker.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import  bd.hellofood.roadtracker.R
 import bd.hellofood.roadtracker.db.Track
 import bd.hellofood.roadtracker.other.TrackingUtility
+import bd.hellofood.roadtracker.ui.viewmodels.MainViewModel
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_run.view.*
 import timber.log.Timber
@@ -19,7 +21,17 @@ import java.util.*
  * Adapter class to list all tracks
  */
 
-class TrackAdapter : RecyclerView.Adapter<TrackAdapter.RunViewHolder>() {
+class TrackAdapter : RecyclerView.Adapter<TrackAdapter.RunViewHolder>()  {
+
+    private lateinit var listener: ItemListener
+
+    interface ItemListener {
+        fun onItemClicked(address: Track, action: String)
+    }
+
+    fun setListener(listener: ItemListener) {
+        this.listener = listener;
+    }
 
     inner class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -82,15 +94,15 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.RunViewHolder>() {
 
             //delete track
             tvDelete.setOnClickListener{
-                Timber.d("clicked")
-                Timber.e("delete!")
-                println("test")
+                Timber.d("Deleting items")
+                listener.onItemClicked(run,"delete")
+                notifyDataSetChanged();
             }
 
             //upload track to Mongodb using graphql api if not uploaded
 
             tvExport.setOnClickListener{
-
+                listener.onItemClicked(run, "upload")
             }
 
         }

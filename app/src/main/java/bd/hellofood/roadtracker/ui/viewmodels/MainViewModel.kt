@@ -63,6 +63,10 @@ class MainViewModel @ViewModelInject constructor(
         mainRepository.insertTrack(run)
         
     }
+
+    fun deleteRun(run: Track) = viewModelScope.launch {
+        mainRepository.deleteTrack(run)
+    }
 }
 
 
