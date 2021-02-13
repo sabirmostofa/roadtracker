@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "883912949061",
+    "project_id": "hellofood-roadtracker",
+    "storage_bucket": "hellofood-roadtracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:883912949061:android:44caeb1df9f660f2f8d22c",
+        "android_client_info": {
+          "package_name": "bd.hellofood.roadtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "883912949061-jmvle01iek0itvbol7jlr4lou9fh8j3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPkIKmha07nN5RNlXcRVEIGNH0h22r1qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "883912949061-jmvle01iek0itvbol7jlr4lou9fh8j3o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

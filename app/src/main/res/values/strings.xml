@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">RoadTracker</string>
+    <string-array name="filter_options">
+        <item>Date</item>
+        <item>Running Time</item>
+        <item>Distance</item>
+        <item>Average Speed</item>
+        <item>Calories Burned</item>
+    </string-array>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCndzW78c9woFal4MqrNEqU1Jfx-kvduZk</string>
+</resources>
