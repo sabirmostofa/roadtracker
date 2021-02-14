@@ -1,6 +1,7 @@
 package bd.hellofood.roadtracker.ui.fragments
 
 import android.Manifest
+import android.content.ContentValues.TAG
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,16 +16,25 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bd.hellofood.roadtracker.R
 import bd.hellofood.roadtracker.adapters.TrackAdapter
+import bd.hellofood.roadtracker.db.Point
 import bd.hellofood.roadtracker.db.Track
 import bd.hellofood.roadtracker.other.Constants.REQUEST_CODE_LOCATION_PERMISSION
-import bd.hellofood.roadtracker.other.GetPlusQuery
+import bd.hellofood.roadtracker.other.PutDataMutation
 import bd.hellofood.roadtracker.other.SortType
 import bd.hellofood.roadtracker.other.TrackingUtility
 import bd.hellofood.roadtracker.ui.MainActivity
 import bd.hellofood.roadtracker.ui.viewmodels.MainViewModel
+import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Input
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
+import com.example.rocketreserver.CreateTrackMutation
+import com.example.rocketreserver.type.TrackData
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 
 
@@ -145,6 +155,9 @@ class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.Permissio
     }
 
 
+    /**
+     * Uploading track using GraphQL
+     */
     fun uploadTrack(track: Track){
         Timber.d("uploading now")
 
@@ -154,22 +167,66 @@ class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.Permissio
             .serverUrl("https://quiet-island-79354.herokuapp.com/graphql")
             .build()
 
+
+        var user = Firebase.auth.currentUser?.email
+        if(user == null)
+            user ="test"
+
+
+
+        if(track.points?.size == 0){
+
+            Toast.makeText(context, "No points recorded! Data not uploaded", Toast.LENGTH_LONG).show()
+            return;
+        }
+
+        val iterator = track.points?.iterator()
+
+        val allPoints = mutableListOf<List<Double>>()
+
+        iterator?.forEach {
+            allPoints.add(listOf(it.lng, it.lat))
+        }
+
+        val trackData = TrackData(
+            Input.fromNullable("android"),
+            Input.fromNullable( track.avgSpeedInKMH.toDouble()),
+            Input.fromNullable(track.distanceInMeters.toDouble()),
+            Input.fromNullable(allPoints),
+            Input.fromNullable(track.timeInMillis.toInt()),
+            Input.fromNullable(track.timestamp.toInt()))
+
+
+        Timber.d(trackData.toString())
+
+
+
         lifecycleScope.launchWhenResumed {
 
-            val response = apolloClient.query(GetPlusQuery()).await()
-
-            Log.d("LaunchList", "Success ${response?.data}")
 
 
-            val res = try {
-                apolloClient.query( GetPlusQuery() ).await()
-            } catch (e: ApolloException) {
+            try {
+                apolloClient
+                    .mutate(CreateTrackMutation(Input.fromNullable(trackData)))
+                    .enqueue(object: ApolloCall.Callback<CreateTrackMutation.Data>() {
+                        override fun onResponse(response: Response<CreateTrackMutation.Data>) {
+                           // Toast.makeText(context, "Track upload success!", Toast.LENGTH_LONG).show()
+
+                            Log.i(TAG, response.toString());
+                        }
+
+                        override fun onFailure(e: ApolloException) {
+                           // Toast.makeText(context, "Could not upload data", Toast.LENGTH_LONG).show()
+                            Log.e(TAG, e.localizedMessage);
+                        }
+                    })
+
+
+            }catch (e: ApolloException) {
                 Timber.e(e,"Failure")
                 null
             }
 
-            Timber.d("2nd res %s", Gson().toJson(track))
-            print("hola")
 
             Timber.d("After coroutine scope ends")
 

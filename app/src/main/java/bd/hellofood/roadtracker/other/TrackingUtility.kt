@@ -2,8 +2,10 @@ package bd.hellofood.roadtracker.other
 
 import android.Manifest
 import android.content.Context
+
 import android.location.Location
 import android.os.Build
+import bd.hellofood.roadtracker.db.Point
 import bd.hellofood.roadtracker.services.Polyline
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.concurrent.TimeUnit
@@ -44,6 +46,22 @@ object TrackingUtility {
         }
         return distance
     }
+
+    fun getUniquePoints(polylines: List<Polyline>): Set<Point> {
+        var distance = 0f
+        var allPoints = mutableListOf<Point>()
+        polylines.forEach {
+            var polyline = it
+            for (i in 0..polyline.size - 1) {
+                var pos1 = polyline[i]
+                var pos2 = polyline[i]
+                allPoints.add(Point(lat = pos1.latitude, lng = pos1.longitude))
+
+            }
+        }
+        return allPoints.toSet()
+    }
+
 
     fun getFormattedStopWatchTime(ms: Long, includeMillis: Boolean = false): String {
         var milliseconds = ms

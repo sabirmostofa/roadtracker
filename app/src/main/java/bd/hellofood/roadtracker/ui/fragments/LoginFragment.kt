@@ -66,6 +66,12 @@ class SetupFragment : Fragment(R.layout.fragment_setup) {
     }
 
     private fun loginToFirebase(){
+        val userName=  etName.text.toString().trim()
+        val pass = etWeight.text.toString().trim()
+        if(userName.length == 0 || pass.length == 0){
+            Toast.makeText(context, "Username or pass cant be empty!",Toast.LENGTH_SHORT).show()
+            return;
+        }
         auth.signInWithEmailAndPassword(etName.text.toString(), etWeight.text.toString())
             .addOnCompleteListener(activity as AppCompatActivity) { task ->
                 if (task.isSuccessful) {

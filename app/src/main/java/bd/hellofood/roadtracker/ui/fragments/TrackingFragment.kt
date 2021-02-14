@@ -195,7 +195,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             val avgSpeed = round((distanceInMeters / 1000f) / (curTimeInMillis / 1000f / 60 / 60) * 10) / 10f
             val dateTimestamp = Calendar.getInstance().timeInMillis
             val caloriesBurned = ((distanceInMeters / 1000f) * weight).toInt()
-            val run = Track(bmp, dateTimestamp, avgSpeed, distanceInMeters, curTimeInMillis, caloriesBurned)
+            val run = Track(bmp, dateTimestamp, avgSpeed, distanceInMeters, curTimeInMillis,
+                caloriesBurned,"test", TrackingUtility.getUniquePoints(pathPoints).toList() )
             viewModel.insertRun(run)
             Snackbar.make(
                 requireActivity().findViewById(R.id.rootView),

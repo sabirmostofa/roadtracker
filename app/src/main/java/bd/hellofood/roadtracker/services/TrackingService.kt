@@ -217,10 +217,16 @@ class TrackingService : LifecycleService() {
     }
 
     private fun addPathPoint(location: Location?) {
+
         location?.let {
+            Timber.d("inside location")
             val pos = LatLng(location.latitude, location.longitude)
             pathPoints.value?.apply {
+                Timber.d("inside pathpoints apply")
+
                 last().add(pos)
+                Timber.d(pathPoints.value.toString())
+                Timber.d(pos.toString())
                 pathPoints.postValue(this)
             }
         }
