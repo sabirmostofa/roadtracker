@@ -26,7 +26,7 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.RunViewHolder>()  {
     private lateinit var listener: ItemListener
 
     interface ItemListener {
-        fun onItemClicked(address: Track, action: String)
+        fun onItemClicked(track: Track, action: String)
     }
 
     fun setListener(listener: ItemListener) {

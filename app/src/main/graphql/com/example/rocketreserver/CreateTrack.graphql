@@ -1,0 +1,15 @@
+mutation PutData($user: String,
+$avgSpeedInKMH: Float,
+$distanceInMeters: Float,
+$points: [Float],
+$timeInMillis: Int,
+$timestamp: Int){
+    createTrack ( user: $user,
+        avgSpeedInKMH: $avgSpeedInKMH,
+        distanceInMeters: $distanceInMeters,
+        points: $points,
+        timeInMillis: $timeInMillis ,
+        timestamp: $timestamp){
+        created
+    }
+}

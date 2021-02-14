@@ -6,6 +6,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'realm-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.apollographql.apollo"
 
 android {
     compileSdkVersion 30
@@ -39,6 +40,11 @@ android {
 
 realm {
     syncEnabled = true
+}
+
+apollo {
+    // instruct the compiler to generate Kotlin models
+    generateKotlinModels.set(true)
 }
 
 dependencies {
@@ -131,5 +137,9 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.5.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
+
+    //apollo-graphql
+    implementation "com.apollographql.apollo:apollo-runtime:2.5.3"
+    implementation "com.apollographql.apollo:apollo-coroutines-support:2.5.3"
 
 }

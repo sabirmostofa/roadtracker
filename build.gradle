@@ -17,6 +17,9 @@ buildscript {
 
         // add gms
         classpath 'com.google.gms:google-services:4.3.5'
+
+        //graphql
+        classpath "com.apollographql.apollo:apollo-gradle-plugin:2.5.3"
     }
 }
 

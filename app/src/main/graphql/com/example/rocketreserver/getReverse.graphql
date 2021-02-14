@@ -1,0 +1,3 @@
+query getReverseCode($code:String!, $union:String!, $district:String!){
+    getReverse(code:$code, union:$union, district:$district)
+}

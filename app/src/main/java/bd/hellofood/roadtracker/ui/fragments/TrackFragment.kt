@@ -3,22 +3,31 @@ package bd.hellofood.roadtracker.ui.fragments
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bd.hellofood.roadtracker.R
 import bd.hellofood.roadtracker.adapters.TrackAdapter
 import bd.hellofood.roadtracker.db.Track
 import bd.hellofood.roadtracker.other.Constants.REQUEST_CODE_LOCATION_PERMISSION
+import bd.hellofood.roadtracker.other.GetPlusQuery
 import bd.hellofood.roadtracker.other.SortType
 import bd.hellofood.roadtracker.other.TrackingUtility
 import bd.hellofood.roadtracker.ui.MainActivity
 import bd.hellofood.roadtracker.ui.viewmodels.MainViewModel
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.coroutines.await
+import com.apollographql.apollo.exception.ApolloException
+import com.google.gson.Gson
+
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_run.*
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -138,6 +147,35 @@ class TrackFragment : Fragment(R.layout.fragment_run), EasyPermissions.Permissio
 
     fun uploadTrack(track: Track){
         Timber.d("uploading now")
+
+        Timber.d(track.toString())
+
+        val apolloClient = ApolloClient.builder()
+            .serverUrl("https://quiet-island-79354.herokuapp.com/graphql")
+            .build()
+
+        lifecycleScope.launchWhenResumed {
+
+            val response = apolloClient.query(GetPlusQuery()).await()
+
+            Log.d("LaunchList", "Success ${response?.data}")
+
+
+            val res = try {
+                apolloClient.query( GetPlusQuery() ).await()
+            } catch (e: ApolloException) {
+                Timber.e(e,"Failure")
+                null
+            }
+
+            Timber.d("2nd res %s", Gson().toJson(track))
+            print("hola")
+
+            Timber.d("After coroutine scope ends")
+
+
+        }
+
 
 
         Toast.makeText(context, "Track has been uploaded!",Toast.LENGTH_SHORT).show();
